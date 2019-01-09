@@ -1,0 +1,24 @@
+#coding:utf-8
+
+POT_TYPE_NORMAL = 0
+POT_TYPE = {
+	POT_TYPE_NORMAL:u"正常",
+}
+
+GROUP_MODE_ID = 0
+GROUP_MODE_KEYWORD = 1
+GROUP_MODE = {
+	GROUP_MODE_ID : u"通过群组id搜索",
+	GROUP_MODE_KEYWORD : u"通过关键字搜索",
+
+}
+
+
+DISPLAY_TYPE_WX_URL = 0
+DISPLAY_TYPE_CONTENT = 1
+DISPLAY_TYPE = {
+	DISPLAY_TYPE_WX_URL:u"微信公众号链接",
+	DISPLAY_TYPE_CONTENT:u"后台填写内容",
+}
+
+
