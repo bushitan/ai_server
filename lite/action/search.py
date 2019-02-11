@@ -12,7 +12,7 @@ class ActionSearch():
 		_group_id = kwargs["group_id"]
 		return self.query_shop.Filter(group_id = _group_id)
 
-import os,django
-django.setup()
-g = ActionSearch()
-print g.getShopListByGroupID(group_id=1)
+# import os,django
+# django.setup()
+# g = ActionSearch()
+# print g.getShopListByGroupID(group_id=1)

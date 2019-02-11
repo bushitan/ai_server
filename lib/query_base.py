@@ -2,7 +2,7 @@
 class QueryBase(object):
 	def __init__(self,model = None):
 		self.model = model
-		print self.model
+		# print self.model
 	def _PackList(self,_pack_fun,query_filter):
 		_list = []
 		for q in query_filter:
@@ -24,14 +24,31 @@ class QueryBase(object):
 		_m = self.model.objects.get(*args,**kwargs)
 		return self._PackDict(_m)
 
+	def GetQuery(self,*args,**kwargs):
+		_m = self.model.objects.get(*args,**kwargs)
+		return _m
+
 	def Filter(self,*args,**kwargs):
 		_m = self.model.objects.filter(*args,**kwargs)
 		return self._PackList( self._PackDict,_m)
+
+	def FilterQuery(self,*args,**kwargs):
+		_m = self.model.objects.filter(*args,**kwargs)
+		return _m
 
 	def Update(self,*args,**kwargs):
 		pass
 
 	def Delete(self,*args,**kwargs):
-		_m = self.model.delete(*args,**kwargs)
-		_m.save()
-		return self._PackDict(_m)
+		_m = self.model.objects.filter(*args,**kwargs)
+		_count = _m.count()
+		_m.delete()
+		return _count
+		# _m.save()
+		# return True
+
+
+
+
+
+
