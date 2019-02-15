@@ -24,7 +24,8 @@ class QiNiu():
         q = qiniu.Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
         # key = file_name
         key = file_name
-        token = q.upload_token(QINIU_BUCKET_NAME,key = key ,policy = {"insertOnly": 0},)
+        # token = q.upload_token(QINIU_BUCKET_NAME,key = key ,policy = {"insertOnly": 0},)
+        token = q.upload_token(QINIU_BUCKET_NAME,key = key )
         return token
 
     def delete(self,key):

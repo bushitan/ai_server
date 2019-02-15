@@ -35,7 +35,7 @@ class ShopAdmin(admin.ModelAdmin):
 	fieldsets = (
 		(u"名称", {'fields': ['user','name',]}),
       	(u"显示", {'fields': ['title','summary','cover',]}),
-      	(u"坐标", {'fields': ['address','latitude','longitude',]}),
+      	(u"坐标", {'fields': ['address','latitude','longitude','content',]}),
 		# (u"店铺展示", {'fields': ['display_type','wx_content_url','content',]}),
 		# (u"店铺信息", {'fields': ['shop_time','phone',]}),
     )

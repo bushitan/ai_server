@@ -45,6 +45,7 @@ class QueryShop(QueryBase):
 		_dict = {
 			'shop_id':query_get.id,
 			'user_id':query_get.user_id,
+			'name':query_get.name,
 			'title':query_get.title,
 			'summary':query_get.summary,
 			'cover':query_get.cover,

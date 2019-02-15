@@ -14,8 +14,8 @@ class ActionQiniu():
 
 
     def getToken(self):
-        # filename ="ai_server_"  + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + ".jpg"
-        filename = "ai_server_2019_02_03_16_10_41.jpg"
+        filename ="ai_server_"  + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + ".jpg"
+        # filename = "ai_server_2019_02_03_16_10_41.jpg"
         token = self.q.getToken(filename)
 
         return token,filename

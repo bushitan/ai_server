@@ -72,10 +72,10 @@ class ShopAdd( ListView):
 				'summary' : request.GET.get('summary',""),#概述
 				'content' : request.GET.get('content',""),#内容详情
 				'address' : request.GET.get('address',""),#地址
-				# 'latitude' : int( request.GET.get('latitude',0)),#纬度
-				# 'longitude' :int( request.GET.get('longitude',0)),#经度
-				'latitude' :0,#纬度
-				'longitude' :0#经度
+				'latitude' :  request.GET.get('latitude',0),#纬度
+				'longitude' : request.GET.get('longitude',0),#经度
+				# 'latitude' :0,#纬度
+				# 'longitude' :0#经度
 			}
 
 			if shop_id == '': #增加新店铺
