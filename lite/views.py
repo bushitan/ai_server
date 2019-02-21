@@ -48,10 +48,13 @@ class QiniuGetToken( ListView):
 class UserLogin( ListView):
 	def get(self, request, *args, **kwargs):
 		# try:
+			app_id = request.GET.get('app_id',"")
 			code = request.GET.get('code',"")
 			user_id = request.GET.get('user_id',"")
+
+			print app_id,code,user_id
 			_dict = {
-				"user":actionUser.checkSession(code,user_id),
+				"user":actionUser.checkSession(app_id,code,user_id),
 			}
 			return MESSAGE_RESPONSE_SUCCESS(_dict)
 		# except Exception,e :
@@ -137,6 +140,25 @@ class ShopGetListByUser( ListView):
 			return MESSAGE_RESPONSE_SUCCESS(_dict)
 		except Exception,e :
 			return MESSAGE_RESPONSE_NET_ERROR( self.__class__.__name__ ,e )
+
+# 用户本身的店铺
+class ShopGetListBySearch( ListView):
+	def get(self, request, *args, **kwargs):
+		try:
+			# user_id = request.GET.get('mode',"")
+			latitude = request.GET.get('latitude',"")
+			longitude = request.GET.get('longitude',"")
+			key = request.GET.get('key',"")
+			country = request.GET.get('country',"")
+
+			_dict = {
+				"shop_list":actionShop.getListBySearch(),
+			}
+			return MESSAGE_RESPONSE_SUCCESS(_dict)
+		except Exception,e :
+			return MESSAGE_RESPONSE_NET_ERROR( self.__class__.__name__ ,e )
+
+
 
 # 用户浏览记录
 class ShopGetTraceByUser( ListView):

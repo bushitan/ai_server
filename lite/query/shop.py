@@ -56,8 +56,8 @@ class QueryShop(QueryBase):
 		return _dict
 
 	# 获取查询内容
-	def filterShort(self,user_id):
-		_shop_list = Shop.objects.filter(user_id = user_id)
+	def filterShort(self,**kwargs):
+		_shop_list = Shop.objects.filter(**kwargs)
 		return self._PackList( self._packDisplay,_shop_list)
 
 	# 更新

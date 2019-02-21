@@ -33,6 +33,11 @@ class ActionShop():
 		# 没有用户，返回空串
 		return self.query_shop.filterShort(user_id = user_id)
 
+	#根据查询获取shop列表
+	def getListBySearch(self,**kwargs):
+		# 没有用户，返回空串
+		return self.query_shop.filterShort(**kwargs)
+
 	#获取自己的列表
 	def getListByTrace(self,user_id):
 		return self.query_trace.filterShort(user_id = user_id)
