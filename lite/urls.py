@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^qiniu/token/$', QiniuGetToken.as_view()), #获取token
 
 
+    url(r'^map/$', MapIndex.as_view()), #获取token
+
     # url(r'^my/example/$', MyExample.as_view()),
 
 ]

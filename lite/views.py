@@ -171,3 +171,25 @@ class ShopGetTraceByUser( ListView):
 			return MESSAGE_RESPONSE_SUCCESS(_dict)
 		# except Exception,e :
 		# 	return MESSAGE_RESPONSE_NET_ERROR( self.__class__.__name__ ,e )
+
+
+
+# 地图
+class MapIndex( ListView):
+
+	template_name = 'map.html'
+	def get_context_data(self, **kwargs):
+		return super(MapIndex, self).get_context_data(**kwargs)
+
+	def get_queryset(self):
+		pass
+
+	# def get(self, request, *args, **kwargs):
+	# 	# try:
+	# 		user_id = request.GET.get('user_id',"")
+	# 		_dict = {
+	# 			"shop_list":actionShop.getListByTrace(user_id),
+	# 		}
+	# 		return MESSAGE_RESPONSE_SUCCESS(_dict)
+		# except Exception,e :
+		# 	return MESSAGE_RESPONSE_NET_ERROR( self.__class__.__name__ ,e )
