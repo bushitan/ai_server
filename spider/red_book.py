@@ -4,7 +4,7 @@ import jieba
 import json
 import xlwt
 
-workbook = xlrd.open_workbook(r'1.xlsx')
+workbook = xlrd.open_workbook(r'data_red/1.xlsx')
 sheet_names= workbook.sheet_names()
 # sheet2 = sheet_names[0]
 sheet2 = workbook.sheet_by_name(sheet_names[0])
@@ -43,7 +43,9 @@ def main():
 	write_file({
 		"list":_list
 	})
-# main()
+
+
+
 def write_excel(counts):
 	wbk = xlwt.Workbook()
 	sheet = wbk.add_sheet('sheet 1')
@@ -56,14 +58,14 @@ def write_excel(counts):
 		sheet.write(i,1,word)#第0行第一列写入内容
 		sheet.write(i,2,count)#第0行第一列写入内容
 
-	wbk.save('content.xls')
+	wbk.save('title.xls')
 
 def read():
 	counts = {}
 	_file = read_file()
 	_list = _file['list']
 	for i in _list:
-		_title =i['content']
+		_title =i['title']
 		for word in _title:
 			counts[word] = counts.get(word,0) + 1
 	write_excel(counts)
@@ -74,6 +76,10 @@ def read():
 	# 	print word.encode('GBK', 'ignore'),count
 
 
+# 获得txt数据
+# main()
+
+#解析数据
 read()
 
 
