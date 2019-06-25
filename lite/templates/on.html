@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>On</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+    <script>
+
+	  var peer = new Peer('anotherid', {key: 'apikey'});
+    var conn = peer.connect('someid');
+      conn.on('open', function() {
+          // Receive messages
+          conn.on('data', function(data) {
+            console.log('Received', data);
+          });
+
+          // Send messages
+          conn.send('Hello!');
+        });
+
+{#        var call = peer.call('dest-peer-id',          mediaStream);#}
+    </script>
+</head>
+<body>
+
+</body>
+</html>

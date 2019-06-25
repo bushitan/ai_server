@@ -184,6 +184,26 @@ class MapIndex( ListView):
 	def get_queryset(self):
 		pass
 
+
+# 地图
+class Call( ListView):
+
+	template_name = 'call.html'
+	def get_context_data(self, **kwargs):
+		return super(Call, self).get_context_data(**kwargs)
+
+	def get_queryset(self):
+		pass
+
+class On( ListView):
+
+	template_name = 'on.html'
+	def get_context_data(self, **kwargs):
+		return super(On, self).get_context_data(**kwargs)
+
+	def get_queryset(self):
+		pass
+
 	# def get(self, request, *args, **kwargs):
 	# 	# try:
 	# 		user_id = request.GET.get('user_id',"")

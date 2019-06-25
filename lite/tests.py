@@ -14,6 +14,9 @@ a  = "\u5317\u4eac"
 print a.decode("unicode-escape")
 
 
+print 'wqew "dsjakdo" '
+
+
 # https://yiicca.com/api/city/detail?city_id=340&key=2222222222
 # https://yiicca.com/api/city/recommend?limit=40&key=2222222222
 

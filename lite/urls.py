@@ -26,6 +26,11 @@ urlpatterns = [
 
     url(r'^map/$', MapIndex.as_view()), #获取token
 
+
+    url(r'^call/$', Call.as_view()), #获取token
+    url(r'^on/$', On.as_view()), #获取token
+
+
     # url(r'^my/example/$', MyExample.as_view()),
 
 ]
