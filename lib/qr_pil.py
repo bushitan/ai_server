@@ -5,48 +5,88 @@ from PIL import Image
 class QRPrint():
 	def __init__(self):
 		self.base_path = r"image/"
-		pass
+		self.card_width = 591
+		self.card_height = 1063
+		self.space = 20
+		self.space_left = 28
+		self.space_top = 128
+		self.qr_x = 145
+		self.qr_y = 643
 
-	def create_page(self):
-		newIm= Image.new('RGBA', (100, 100), 'red')
-		newIm.save(self.base_path  + r'1.png')
-
-	def copy(self,bg_path ,qr_path,x,y):
+	# 获取打印的背景图
+	# 不包含二维码
+	def start_base(self ,bg_white,card_path,template_out):
+		bg_path = bg_white
+		_card_path = card_path
+		out = template_out
 		im_bg = Image.open(bg_path)
-		qr = Image.open(qr_path)
-		# cropedIm = im.crop((100,100,200,200))
-		im_bg.paste(qr, (x, y), mask=qr)
-		# im_bg.show()
-		im_bg.save(self.base_path + r'paste.jpg')
-	def start(self):
-		bg = self.base_path  + r'bg.jpg'
-		qr = self.base_path  + r'wm_2UdX86fZ_200.png'
-		self.copy(bg,qr,68,601)
+		card = Image.open(_card_path)
+
+		for i in range(0,4):
+			_bx = (self.card_width + self.space) * i + self.space_left
+			for j in range(0,3):
+				_by = (self.card_height + self.space) * j + self.space_top
+				im_bg.paste(card, (_bx, _by))
+		im_bg.save(out)
+
+	# 在已经打好的背景图上
+	# 打印最终的二维码
+	def start_final(self,bg_path,qr_list,out_path):
+		bg = Image.open(bg_path)
+		for i in range(0,4):
+			_bx = (self.card_width + self.space) * i + self.space_left + self.qr_x
+			for j in range(0,3):
+				_by = (self.card_height + self.space) * j + self.space_top + self.qr_y
+
+				if len(qr_list) <= 0 :
+					break
+				qr_path = qr_list.pop(0)  # 从第一个拿数据
+				qr = Image.open(qr_path)  # 画qr
+				bg.paste(qr, (_bx, _by), mask=qr)
+		bg.save(out_path)
+
+
+class QRUtils():
+	def __init__(self,bg_path,template_path,out_path):
+		self.qr_print = QRPrint()
+		self.bg_path = bg_path
+		self.template_path = template_path
+		self.out_path = out_path
+
+	# 输出打印模板
+	# 可以正、反同时使用
+	def create_bg(self):
+		self.qr_print.start_base(
+			self.bg_path ,
+			self.template_path ,
+			self.out_path
+		)
+
+	# 倒霉
+	def create_print(self,qr_list ,final_path):
+		self.qr_print.start_final(self.out_path,qr_list,final_path)
+
+	def start(self,qr_list,final_path):
+		self.create_bg()
+		self.create_print(qr_list,final_path)
 
 if __name__ == "__main__":
-	q = QRPrint()
-	q.create_page()
-	q.start()
 
 
-# 2468  617
-# 3496  874
+	card_back =  QRUtils(
+		bg_path = r"image/bg.jpg",
+		template_path = r"image/card_back.jpg",
+		out_path = r"image/r_card_back_template.jpg"
+	)
+	card_back.create_bg()
 
-# 620 877
+	card_front =  QRUtils(
+		bg_path = r"image/bg.jpg",
+		template_path = r"image/card_front.jpg",
+		out_path = r"image/r_card_front_template.jpg"
+	)
 
-# 二维码位置  x=68 , y=601   w=200, h=200
-
-
-
-#
-#
-# im_path = r'image/mp.jpg'
-# im = Image.open(im_path)
-# width, height = im.size
-# # 宽高
-# print(im.size, width, height)
-# # 格式，以及格式的详细描述
-# print(im.format, im.format_description)
-#
-# im.save(r'image/mp1.jpg')
-# im.show()
+	qr_list = []
+	for i in range(0,12):
+		qr_list.append( r"image/qr.png")
+	card_front.start(qr_list , r"image/r_final1.jpg")
