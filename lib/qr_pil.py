@@ -4,7 +4,7 @@
 	需要安装 reportlab，安装地址如下
 	pip install reportlab -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 '''
-from PIL import Image
+from PIL import Image,ImageDraw,ImageFont
 import os
 import re
 import sys
@@ -17,7 +17,7 @@ class QRPrint():
 		self.card_width = 591
 		self.card_height = 1063
 		self.space = 20
-		self.space_left = 26 #基础28
+		self.space_left = 22 #基础28
 		self.space_top = 128
 		self.qr_x = 145
 		self.qr_y = 643
@@ -51,8 +51,16 @@ class QRPrint():
 	# 	bg_path	 A4模板背景
 	# 	qr_list  二维码列表
 	# 	out_path 最终打印图片地址
-	def print_a4_qr(self,bg_path,qr_list,out_path):
+	def print_a4_qr(self,bg_path,qr_list,out_path,page_index):
 		bg = Image.open(bg_path)
+
+
+		# 页面序号
+		draw = ImageDraw.Draw(bg)
+		ttfont = ImageFont.truetype("C:\\Windows\\Fonts\\STXINGKA.TTF",50)
+		draw.text((10,10), str(page_index), fill=(0,0,0),font=ttfont)
+
+		# 粘贴二维码
 		for i in range(0,4):
 			_bx = (self.card_width + self.space) * i + self.space_left + self.qr_x
 			for j in range(0,3):
@@ -105,12 +113,14 @@ class QRUtils():
 	# 读取所有二维码地址
 	# @param
 	# 	all_qr_list 二维码地址数组
-	def create_img(self,all_qr_list):
+	def create_img(self,all_qr_list,file_save):
 		_list = self.qr_print.arr_size(all_qr_list,12) # #将数组拆分为12
 		# 将数组拆分为12长度的子数组
 		for i, sub_list in enumerate( _list ):
 			print (i,sub_list)
-			self.start(sub_list , r"image/r_%s.jpg" % (i)) # 打印二维码
+			# self.start(sub_list , file_save + r"r_%s.jpg" % (i)) # 打印二维码
+			self.create_bg()
+			self.qr_print.print_a4_qr(self.out_path,sub_list , file_save + r"%s.jpg" % (i) , i)
 
 
 	# 读取所有二维码地址
@@ -126,22 +136,38 @@ class QRUtils():
 
 if __name__ == "__main__":
 
+	BASE  =  unicode( r"E:\CarcerWorld\方案策划\6 咖啡地图 2019-2-11\1 集点卡\外卖卡券\制作\\" ,"utf-8")
+	# 模板
+	IMAGE_A4 =  BASE + unicode( r"1 原材料\bg.jpg" ,"utf-8")
+	IMAGE_FRONT = BASE +  unicode(r"1 原材料\\front.jpg","utf-8")
+	IMAGE_BACK = BASE +  unicode(r"1 原材料\\back.jpg","utf-8")
+
+	print (os.path.exists(IMAGE_FRONT))
+	# 打印底稿
+	PRINT_BG_FRONT = BASE +  unicode(r'2 合成底稿\r_card_front_template.jpg',"utf-8")
+	PRINT_BG_BACK = BASE +  unicode(r'2 合成底稿\r_card_back_template.jpg',"utf-8")
+
+	# 二维码文件夹
+	FILE_QR = BASE +  unicode(r'3 二维码文件夹\17_101_500\\',"utf-8")
+	# 结果图片文件夹
+	FILE_SAVE =  BASE + unicode(r'4 生成结果\\',"utf-8")
+
 	# 创建背面
 	card_back =  QRUtils(
-		bg_path = r"image/bg.jpg",
-		template_path = r"image/card_back.jpg",
-		out_path = r"image/r_card_back_template.jpg"
+		bg_path = IMAGE_A4,
+		template_path = IMAGE_BACK,
+		out_path = PRINT_BG_BACK
 	)
 	card_back.create_bg()
 
 	card_front =  QRUtils(
-		bg_path = r"image/bg.jpg",
-		template_path = r"image/card_front.jpg",
-		out_path = r"image/r_card_front_template.jpg"
+		bg_path =IMAGE_A4,
+		template_path = IMAGE_FRONT,
+		out_path = PRINT_BG_FRONT
 	)
 	card_front.create_bg()
-	qr_list = card_front.read_all_qr_path(r"image/1_1_63/")
-	card_front.create_img(qr_list)
+	qr_list = card_front.read_all_qr_path(FILE_QR)
+	card_front.create_img(qr_list,FILE_SAVE)
 
 	# print (qr_list)
 
