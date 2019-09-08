@@ -10,20 +10,45 @@ import re
 import sys
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas
+import shutil
 
 class QRPrint():
 	def __init__(self):
 		self.base_path = r"image/"
 		self.card_width = 591
 		self.card_height = 1063
-		self.space = 20
-		self.space_left = 22 #基础28
+		self.space = 20 #20
+		self.space_left = 28 #基础28   # 广电打印机23
 		self.space_top = 128
+
+		# #普通版本
+		# self.qr_x = 145
+		# self.qr_y = 643  # 原有的位置
+		# # self.qr_y = 590
+		# self.qr_width = 300 # 二维码宽度
+		# self.qr_height = 300 # 二维码高度
+
+
+		#新版设计稿
 		self.qr_x = 145
-		self.qr_y = 643
+		self.qr_y = 290  # 原有的位置
 		self.qr_width = 300 # 二维码宽度
 		self.qr_height = 300 # 二维码高度
 
+		# 竖直图的位置
+		# self.qr_x = 263
+		# self.qr_y = 684
+		# self.qr_width = 280 # 二维码宽度
+		# self.qr_height = 280 # 二维码高度
+
+		# 魏阿未版本
+		# self.qr_x = 105
+		# self.qr_y = 480
+		# self.qr_width = 380 # 二维码宽度
+		# self.qr_height = 380 # 二维码高度
+
+
+		self.sn_space = 20 # SN序列号的空白位置
 
 	# 获取打印的背景图
 	# 不包含二维码
@@ -57,21 +82,51 @@ class QRPrint():
 
 		# 页面序号
 		draw = ImageDraw.Draw(bg)
-		ttfont = ImageFont.truetype("C:\\Windows\\Fonts\\STXINGKA.TTF",50)
+		ttfont = ImageFont.truetype("C:\\Windows\\Fonts\\STXINGKA.TTF",30)
 		draw.text((10,10), str(page_index), fill=(0,0,0),font=ttfont)
+
+
+		for i in range(0,5):
+			_bx = (self.card_width + self.space  ) * i + self.space_left - self.space
+			for j in range(0,4):
+				_by = (self.card_height + self.space ) * j + self.space_top - self.space * 1.5
+				# 取消中间的标记点
+				if i==1 and j==1:
+					continue
+				if i==1 and j==2:
+					continue
+				if i==2 and j==1:
+					continue
+				if i==2 and j==2:
+					continue
+				if i==3 and j==1:
+					continue
+				if i==3 and j==2:
+					continue
+				draw.text((_bx,_by), str('-'), fill=(0,0,0),font=ttfont)
+				# draw.arc((_bx, _by, 2, 2), 0, 360, 'black')
 
 		# 粘贴二维码
 		for i in range(0,4):
-			_bx = (self.card_width + self.space) * i + self.space_left + self.qr_x
+
+			_bx = (self.card_width + self.space) * i + self.space_left
 			for j in range(0,3):
-				_by = (self.card_height + self.space) * j + self.space_top + self.qr_y
+				_by = (self.card_height + self.space) * j + self.space_top
 
 				if len(qr_list) <= 0 :
 					break
+
+				# 粘贴二维码
 				qr_path = qr_list.pop(0)  # 从第一个拿数据
 				qr = Image.open(qr_path)  # 画qr
 				qr = qr.resize((self.qr_width ,self.qr_height)) # 重新设置二维码大小
-				bg.paste(qr, (_bx, _by ), mask=qr)
+				bg.paste(qr, (_bx  + self.qr_x , _by + self.qr_y ), mask=qr)
+
+				# 写SN 序列号
+				sn = qr_path.split("\\")[-1].split(".")[0]
+				draw.text((_bx + self.sn_space * 1.5  ,_by + self.sn_space), str("SN:" + sn), fill=(64,56,65 , 120),font=ttfont)
+
+
 		bg.save(out_path)
 
 
@@ -84,7 +139,8 @@ class QRPrint():
 		return s
 
 
-
+	def print_back(self,org_path,out_path):
+		shutil.copyfile(org_path,out_path )
 
 
 # 二维码工具
@@ -113,15 +169,21 @@ class QRUtils():
 	# 读取所有二维码地址
 	# @param
 	# 	all_qr_list 二维码地址数组
-	def create_img(self,all_qr_list,file_save):
+	# 	file_save 正面存储地址
+	#	org_back 背面原始地址
+	def create_img(self,all_qr_list,file_save,org_back):
 		_list = self.qr_print.arr_size(all_qr_list,12) # #将数组拆分为12
 		# 将数组拆分为12长度的子数组
 		for i, sub_list in enumerate( _list ):
 			print (i,sub_list)
 			# self.start(sub_list , file_save + r"r_%s.jpg" % (i)) # 打印二维码
 			self.create_bg()
+
+			# 打印正面图片
 			self.qr_print.print_a4_qr(self.out_path,sub_list , file_save + r"%s.jpg" % (i) , i)
 
+			# 复制背面图片
+			self.qr_print.print_back(  org_back, file_save + r"%sb.jpg" % (i) )
 
 	# 读取所有二维码地址
 	# @param
@@ -136,6 +198,10 @@ class QRUtils():
 
 if __name__ == "__main__":
 
+	# 唯一输入的文件夹名字
+	input_qr_file_name = "27_22101_23600" #seeking
+
+
 	BASE  =  unicode( r"E:\CarcerWorld\方案策划\6 咖啡地图 2019-2-11\1 集点卡\外卖卡券\制作\\" ,"utf-8")
 	# 模板
 	IMAGE_A4 =  BASE + unicode( r"1 原材料\bg.jpg" ,"utf-8")
@@ -148,9 +214,10 @@ if __name__ == "__main__":
 	PRINT_BG_BACK = BASE +  unicode(r'2 合成底稿\r_card_back_template.jpg',"utf-8")
 
 	# 二维码文件夹
-	FILE_QR = BASE +  unicode(r'3 二维码文件夹\17_101_500\\',"utf-8")
+	FILE_QR = BASE +  unicode(r'3 二维码文件夹\%s\\' % (input_qr_file_name),"utf-8")
 	# 结果图片文件夹
 	FILE_SAVE =  BASE + unicode(r'4 生成结果\\',"utf-8")
+
 
 	# 创建背面
 	card_back =  QRUtils(
@@ -167,7 +234,26 @@ if __name__ == "__main__":
 	)
 	card_front.create_bg()
 	qr_list = card_front.read_all_qr_path(FILE_QR)
-	card_front.create_img(qr_list,FILE_SAVE)
+	# 创建图片
+	card_front.create_img(qr_list,FILE_SAVE  , PRINT_BG_BACK  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	# print (qr_list)
 
